@@ -8,7 +8,7 @@ defmodule MainSupervisor do
   @impl true
   def init(_init_arg) do
     children = [
-      {Printer, :ok},
+      {Printer, {5, 50}},
       %{
         id: :reader1,
         start: {Reader, :start_link, [:reader1, "localhost:4000/tweets/1"]}

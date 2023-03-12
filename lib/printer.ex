@@ -12,6 +12,13 @@ defmodule Printer do
   end
 
   @impl true
+  def handle_info("GO KILL YOURSELF", {name, sleep_min, sleep_max}) do
+    IO.puts("#{name} is going to kill itself...")
+    exit(:death_by_suicide)
+    {:noreply, {name, sleep_min, sleep_max}}
+  end
+
+  @impl true
   def handle_info(json, {name, sleep_min, sleep_max}) do
     text = json["message"]["tweet"]["text"] |> String.replace("\n", " ") |> String.slice(0, 45)
     IO.puts("#{name}: #{text}")

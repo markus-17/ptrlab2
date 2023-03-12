@@ -9,9 +9,16 @@ defmodule MainSupervisor do
   def init(_init_arg) do
     children = [
       {Printer, :ok},
-      {Reader, {:reader1, "localhost:4000/tweets/1"}}
+      %{
+        id: :reader1,
+        start: {Reader, :start_link, [:reader1, "localhost:4000/tweets/1"]}
+      },
+      %{
+        id: :reader2,
+        start: {Reader, :start_link, [:reader2, "localhost:4000/tweets/2"]}
+      }
     ]
 
-    Supervisor.init(children, strategy: :one_for_one)
+    Supervisor.init(children, strategy: :rest_for_one)
   end
 end

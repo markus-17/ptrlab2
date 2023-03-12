@@ -1,7 +1,7 @@
 defmodule Reader do
   use GenServer
 
-  def start_link({name, url}) do
+  def start_link(name, url) do
     GenServer.start_link(__MODULE__, url, name: name)
   end
 

@@ -29,8 +29,7 @@ defmodule Reader do
     {:ok, result} = json |> Poison.decode()
 
     [
-      Printer,
-      HashtagPrinter
+      LoadBalancer
     ]
     |> Enum.each(&send(&1, result))
 

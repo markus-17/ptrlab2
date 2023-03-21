@@ -19,7 +19,7 @@ defmodule Reader do
 
   @impl true
   def handle_info(%HTTPoison.AsyncChunk{chunk: "event: \"message\"\n\ndata: {\"message\": panic}\n\n"}, url) do
-    LoadBalancer |> send("GO KILL YOURSELF")
+    # LoadBalancer |> send("GO KILL YOURSELF")
     {:noreply, url}
   end
 

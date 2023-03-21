@@ -20,7 +20,6 @@ defmodule WorkerPoolSupervisor do
         id: :printer3,
         start: {Printer, :start_link, [:printer3, 5, 50]}
       },
-      {LoadBalancer, 3}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

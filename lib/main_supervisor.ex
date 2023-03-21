@@ -9,6 +9,7 @@ defmodule MainSupervisor do
   def init(_init_arg) do
     children = [
       {WorkerPoolSupervisor, :ok},
+      {LoadBalancer, :ok},
       %{
         id: :reader1,
         start: {Reader, :start_link, [:reader1, "localhost:4000/tweets/1"]}

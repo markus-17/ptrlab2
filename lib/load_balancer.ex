@@ -23,8 +23,14 @@ defmodule LoadBalancer do
     hash_distribution_key = message["message"]["tweet"]["text"]
     nr_of_printers = Supervisor.count_children(WorkerPoolSupervisor).specs
     current_printer = :crypto.hash(:sha256, hash_distribution_key) |> :binary.last() |> rem(nr_of_printers)
-    printer_name = :"printer#{current_printer + 1}"
-    if Process.whereis(printer_name) != nil, do: send(printer_name, message)
+    message_ref = make_ref()
+
+    Enum.each(0..2, fn i ->
+      printer_id = rem(current_printer + i, nr_of_printers)
+      printer_name = :"printer#{printer_id}"
+      if Process.whereis(printer_name) != nil, do: send(printer_name, {message, message_ref})
+    end)
+
     {:noreply, state}
   end
 end

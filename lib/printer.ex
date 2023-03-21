@@ -22,7 +22,8 @@ defmodule Printer do
   end
 
   @impl true
-  def handle_info(json, {name, sleep_min, sleep_max, bad_words}) do
+  def handle_info({json, msg_ref}, {name, sleep_min, sleep_max, bad_words}) do
+    sleep_min..sleep_max |> Enum.random() |> Process.sleep()
     text = json["message"]["tweet"]["text"] |> String.replace("\n", " ") |> String.slice(0, 80)
     words = text |> String.split(" ", trim: True)
 
@@ -41,8 +42,15 @@ defmodule Printer do
       end)
 
     formatted_text = formatted_words |> Enum.join(" ")
-    IO.puts("#{name}: #{formatted_text}")
-    sleep_min..sleep_max |> Enum.random() |> Process.sleep()
+
+    case WorkerSpeculator.check_msg_ref(msg_ref) do
+      :ok ->
+        IO.puts("#{name}: #{formatted_text}")
+
+      :late ->
+        IO.puts("#{name}: Message #{inspect(msg_ref)} already printed")
+    end
+
     {:noreply, {name, sleep_min, sleep_max, bad_words}}
   end
 end

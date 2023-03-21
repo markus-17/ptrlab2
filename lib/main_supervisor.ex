@@ -8,6 +8,7 @@ defmodule MainSupervisor do
   @impl true
   def init(_init_arg) do
     children = [
+      {WorkerSpeculator, :ok},
       {WorkerPoolSupervisor, :ok},
       {LoadBalancer, :ok},
       %{

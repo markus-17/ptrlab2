@@ -8,7 +8,10 @@ defmodule Printer do
 
   @impl true
   def init({name, sleep_min, sleep_max}) do
-    {:ok, {name, sleep_min, sleep_max}}
+    {:ok, bad_words_json} = File.read("bad_words.json")
+    {:ok, bad_words_dict} = Poison.decode(bad_words_json)
+    bad_words = bad_words_dict["RECORDS"] |> Enum.map(& &1["word"])
+    {:ok, {name, sleep_min, sleep_max, bad_words}}
   end
 
   @impl true
@@ -19,10 +22,27 @@ defmodule Printer do
   end
 
   @impl true
-  def handle_info(json, {name, sleep_min, sleep_max}) do
-    text = json["message"]["tweet"]["text"] |> String.replace("\n", " ") |> String.slice(0, 45)
-    IO.puts("#{name}: #{text}")
+  def handle_info(json, {name, sleep_min, sleep_max, bad_words}) do
+    text = json["message"]["tweet"]["text"] |> String.replace("\n", " ") |> String.slice(0, 80)
+    words = text |> String.split(" ", trim: True)
+
+    formatted_words =
+      words
+      |> Enum.map(fn word ->
+        downcased_word = word |> String.downcase()
+
+        case Enum.find(bad_words, &(&1 == downcased_word)) do
+          nil ->
+            word
+
+          _ ->
+            String.duplicate("*", String.length(word))
+        end
+      end)
+
+    formatted_text = formatted_words |> Enum.join(" ")
+    IO.puts("#{name}: #{formatted_text}")
     sleep_min..sleep_max |> Enum.random() |> Process.sleep()
-    {:noreply, {name, sleep_min, sleep_max}}
+    {:noreply, {name, sleep_min, sleep_max, bad_words}}
   end
 end

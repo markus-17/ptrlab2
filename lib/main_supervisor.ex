@@ -17,7 +17,8 @@ defmodule MainSupervisor do
       %{
         id: :reader2,
         start: {Reader, :start_link, [:reader2, "localhost:4000/tweets/2"]}
-      }
+      },
+      {WorkerManager, [100, 3, 50, 50]}
     ]
 
     Supervisor.init(children, strategy: :rest_for_one)

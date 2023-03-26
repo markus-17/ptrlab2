@@ -13,8 +13,9 @@ defmodule EngagementRatioScorer do
 
   @impl true
   def handle_info({json, ref}, {name}) do
+    user_id = json["message"]["tweet"]["user"]["id"]
     engagement_ratio = get_engagement_ratio(json)
-    send(Reducer, {:engagement_ratio_score, ref, name, engagement_ratio})
+    send(Reducer, {:engagement_ratio_score, ref, name, engagement_ratio, user_id})
     {:noreply, {name}}
   end
 

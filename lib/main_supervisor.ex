@@ -8,7 +8,13 @@ defmodule MainSupervisor do
   @impl true
   def init(_init_arg) do
     children = [
-      {WorkerPoolSupervisor, :ok},
+      %{
+        id: Reducer,
+        start: {Reducer, :start_link, [Reducer]}
+      },
+      WorkerPoolSupervisor.get_specification(:formatter, 3),
+      WorkerPoolSupervisor.get_specification(:sentiment_scorer, 3),
+      WorkerPoolSupervisor.get_specification(:engagement_ratio_scorer, 3),
       {LoadBalancer, :ok},
       %{
         id: :reader1,

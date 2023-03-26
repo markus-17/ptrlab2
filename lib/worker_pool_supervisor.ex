@@ -10,15 +10,15 @@ defmodule WorkerPoolSupervisor do
     children = [
       %{
         id: :printer1,
-        start: {Printer, :start_link, [:printer1, 5, 50]}
+        start: {Printer, :start_link, [:printer1]}
       },
       %{
         id: :printer2,
-        start: {Printer, :start_link, [:printer2, 5, 50]}
+        start: {Printer, :start_link, [:printer2]}
       },
       %{
         id: :printer3,
-        start: {Printer, :start_link, [:printer3, 5, 50]}
+        start: {Printer, :start_link, [:printer3]}
       },
     ]
 

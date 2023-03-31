@@ -58,12 +58,13 @@ defmodule Reducer do
       {sentiment_scorer, sentiment_score} = map.sentiment_score
       {engagement_ratio_scorer, engagement_ratio_score, user_id} = map.engagement_ratio_score
 
-      IO.puts(
+      string =
         "#{formatter}: #{text}\n" <>
           "#{sentiment_scorer}: #{sentiment_score}\n" <>
           "#{engagement_ratio_scorer}: #{engagement_ratio_score}\n" <>
           "User with id #{user_id} has a cumulative engagement_ratio_score: #{Map.get(user_map, user_id)}\n"
-      )
+
+      send(Batcher, {:matching_set_string, string})
 
       true
     else

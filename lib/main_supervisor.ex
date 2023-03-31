@@ -9,6 +9,10 @@ defmodule MainSupervisor do
   def init(_init_arg) do
     children = [
       %{
+        id: Batcher,
+        start: {Batcher, :start_link, [200, 3]}
+      },
+      %{
         id: Reducer,
         start: {Reducer, :start_link, [Reducer]}
       },

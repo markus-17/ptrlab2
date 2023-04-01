@@ -10,7 +10,7 @@ defmodule MainSupervisor do
     children = [
       %{
         id: Batcher,
-        start: {Batcher, :start_link, [200, 3]}
+        start: {Batcher, :start_link, [600, 9, 5]}
       },
       %{
         id: Reducer,

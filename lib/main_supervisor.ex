@@ -19,6 +19,10 @@ defmodule MainSupervisor do
       WorkerPoolSupervisor.get_specification(:formatter, 3),
       WorkerPoolSupervisor.get_specification(:sentiment_scorer, 3),
       WorkerPoolSupervisor.get_specification(:engagement_ratio_scorer, 3),
+      %{
+        id: RetweetHandler,
+        start: {RetweetHandler, :start_link, [:ok]}
+      },
       {LoadBalancer, :ok},
       %{
         id: :reader1,

@@ -39,6 +39,9 @@ defmodule LoadBalancer do
 
     ref = make_ref()
     [formatter, sentiment_scorer, engagement_ratio_scorer] |> Enum.map(&send(&1, {message, ref}))
+
+    send(RetweetHandler, {:check_for_retweet, message})
+
     {:noreply, state}
   end
 end

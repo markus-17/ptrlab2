@@ -31,7 +31,15 @@ defmodule Batcher do
 
     cond do
       string_list_length >= batch_size ->
-        Datastore.insert_batch(string_list)
+        try do
+          Datastore.insert_batch(string_list)
+        rescue
+          _ ->
+            Reducer.stop()
+            Process.sleep(10_000)
+            Datastore.insert_batch(string_list)
+            Reducer.start()
+        end
 
         IO.puts(
           "---------------- Batch Size Quota Has Been Met #{string_list_length}/#{batch_size} ----------------\n" <>
@@ -50,7 +58,15 @@ defmodule Batcher do
         {[], system_time}
 
       system_time >= last_print_time + timeout ->
-        Datastore.insert_batch(string_list)
+        try do
+          Datastore.insert_batch(string_list)
+        rescue
+          _ ->
+            Reducer.stop()
+            Process.sleep(10_000)
+            Datastore.insert_batch(string_list)
+            Reducer.start()
+        end
 
         IO.puts(
           "---------------- Timeout Reached #{string_list_length}/#{batch_size} ----------------\n" <>

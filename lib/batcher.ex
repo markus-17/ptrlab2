@@ -31,7 +31,7 @@ defmodule Batcher do
 
     cond do
       string_list_length >= batch_size ->
-        string_list |> Enum.map(&IO.puts(&1))
+        Datastore.insert_batch(string_list)
 
         IO.puts(
           "---------------- Batch Size Quota Has Been Met #{string_list_length}/#{batch_size} ----------------\n" <>
@@ -50,7 +50,7 @@ defmodule Batcher do
         {[], system_time}
 
       system_time >= last_print_time + timeout ->
-        string_list |> Enum.map(&IO.puts(&1))
+        Datastore.insert_batch(string_list)
 
         IO.puts(
           "---------------- Timeout Reached #{string_list_length}/#{batch_size} ----------------\n" <>

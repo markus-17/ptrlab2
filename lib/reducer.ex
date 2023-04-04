@@ -57,18 +57,20 @@ defmodule Reducer do
 
   defp check_and_print(map, user_map, should_flood) do
     if map |> Map.keys() |> length() == 3 do
-      {formatter, text} = map.formatted_text
-      {sentiment_scorer, sentiment_score} = map.sentiment_score
-      {engagement_ratio_scorer, engagement_ratio_score, user_id} = map.engagement_ratio_score
+      {_formatter, text} = map.formatted_text
+      {_sentiment_scorer, sentiment_score} = map.sentiment_score
+      {_engagement_ratio_scorer, engagement_ratio_score, user_id} = map.engagement_ratio_score
 
       if should_flood do
-        string =
-          "#{formatter}: #{text}\n" <>
-            "#{sentiment_scorer}: #{sentiment_score}\n" <>
-            "#{engagement_ratio_scorer}: #{engagement_ratio_score}\n" <>
-            "User with id #{user_id} has a cumulative engagement_ratio_score: #{Map.get(user_map, user_id)}\n"
+        data = %{
+          user_id: user_id,
+          text: text,
+          sentiment_score: sentiment_score,
+          engagement_ratio_score: engagement_ratio_score,
+          cumulative_engagement_ratio_score: Map.get(user_map, user_id)
+        }
 
-        send(Batcher, {:matching_set_string, string})
+        send(Batcher, {:matching_set_string, data})
       end
 
       true
